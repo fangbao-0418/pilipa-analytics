@@ -37,7 +37,7 @@ export function myFetch (url: string, payload?: any) {
     data: params(payload)
   })
 }
-export function http (type: 'wx' | 'my' | 'web' = 'web', url: string, payload?: any) {
+export function http (type: 'wx' | 'my' | 'web' | 'rn' = 'web', url: string, payload?: any) {
   if (type === 'my') {
     myFetch(url, payload)
   } else if (type === 'wx') {

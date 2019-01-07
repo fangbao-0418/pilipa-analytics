@@ -1,6 +1,6 @@
 {
   "name": "pilipa-analytics",
-  "version": "1.0.0-alpha.6",
+  "version": "1.0.0-alpha.10",
   "description": "噼里啪数据分析工具",
   "main": "libs/index.js",
   "typings": "libs/index.d.ts",

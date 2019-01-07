@@ -24,3 +24,4 @@ declare const my: {
   }) => void
   getStorageSync: (payload: {key: string}) => any
 }
+declare module 'react-native'

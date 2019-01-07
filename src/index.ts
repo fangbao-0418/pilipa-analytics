@@ -1,40 +1,77 @@
 import storage from './storage'
 import _ from './utils'
-
+export interface ConfigProps {
+  env?: 'dev' | 'production'
+  trigger?: boolean
+}
+const origin: {[type: string]: string} = {
+  dev: 'https://x-collector.i-counting.cn',
+  production: 'https://collector.pilipa.cn'
+}
 class Pa {
   public appid: string
-  public ua: string
-  public env: 'web' | 'wx' | 'my' = this.getEnv()
-  public origin = 'https://x-collector.i-counting.cn/'
-  public url = this.origin + 'log.gif'
+  public env: 'web' | 'wx' | 'rn' | 'my' = this.getEnv()
+  public config = {
+    env: 'production',
+    trigger: true
+  }
+  public origin: string
+  public url: string
   /** 唯一身份id */
-  public uniquedId = storage.get('gcookie', this.env) || ''
-  public constructor (appid: string, ua?: string) {
+  public uniquedId: string
+  public ua: string
+  public constructor (appid: string, ua?: string | ConfigProps, config?: ConfigProps) {
     this.appid = appid
-    this.ua = ua || this.getUa()
+    if (ua !== undefined) {
+      if (ua instanceof Object && config === undefined) {
+        this.config = Object.assign({}, this.config, ua)
+        this.ua = this.getUa()
+      } else if (typeof ua === 'string') {
+        this.ua = String(ua)
+        this.config = Object.assign({}, this.config, config)
+      } else {
+        throw new Error('参数不正确')
+      }
+    } else {
+      this.ua = this.getUa()
+    }
+    this.origin = origin[this.config.env]
+    this.url = this.origin + '/log.gif'
+    this.getUniquedId()
+  }
+  public async getUniquedId () {
+    this.uniquedId = await storage.get('gcookie', this.env)
     if (!this.uniquedId) {
       this.uniquedId = _.createUniqueId()
       storage.set('gcookie', this.uniquedId, this.env)
     }
+    return this.uniquedId
   }
   public getEnv () {
-    let env: 'web' | 'wx' | 'my' = 'web'
+    let env: 'web' | 'wx' | 'my' | 'rn' = 'web'
     try {
       if (wx) {
-        env = 'wx'
+        return env = 'wx'
       }
     } catch (e) {
     }
     try {
       if (my) {
-        env = 'my'
+        return env = 'my'
       }
     } catch (e) {
+    }
+    if (window && window.navigator && window.navigator.product === 'ReactNative') {
+      env = 'rn'
+    } else if (document) {
+      env = 'web'
+    } else {
+      throw new Error('未知环境')
     }
     return env
   }
   /** 页面追踪 */
-  public trackPage (payload: {
+  public async trackPage (payload: {
     /** 网页标题 */
     title: string
     /** 当前url */
@@ -43,24 +80,26 @@ class Pa {
     referer: string
   }) {
     const params = {
+      _aid: this.appid,
       _lid: 'page',
       _eid: 'pageview',
-      _gc: this.uniquedId,
+      _gc: await this.getUniquedId(),
       _ua: this.ua
     }
     const query = _.params(params)
     this.send(query, payload)
   }
   /** 事件追踪 */
-  public trackEvent (eventParams: {
+  public async trackEvent (eventParams: {
     labelId: string
     eventId: string
     params: any
   }) {
     const params = {
+      _aid: this.appid,
       _lid: eventParams.labelId,
       _eid: eventParams.eventId,
-      _gc: this.uniquedId,
+      _gc: await this.getUniquedId(),
       _ua: this.ua
     }
     const query = _.params(params)
@@ -74,7 +113,9 @@ class Pa {
     return ua
   }
   public send (query: string, params?: any) {
-    _.http(this.env, this.url + '?' + query, params)
+    if (this.config.trigger) {
+      _.http(this.env, this.url + '?' + query, params)
+    }
   }
 }
 export default Pa

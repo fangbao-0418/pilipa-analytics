@@ -1,3 +1,12 @@
+let rnAsyncStorage: any = {}
+try {
+  if (window && window.navigator && window.navigator.product === 'ReactNative') {
+    rnAsyncStorage = require('react-native').AsyncStorage
+  }
+} catch (e) {
+  rnAsyncStorage = {}
+  // console.warn(e)
+}
 export default {
   set (key: string, value: string, type: string = 'web') {
     if (type === 'wx') {
@@ -9,14 +18,20 @@ export default {
         key,
         data: value
       })
-    } else {
+    } else if (type === 'rn') {
+      try {
+        rnAsyncStorage.setItem(key, value)
+      } catch (e) {
+        // throw new Error(e)
+      }
+    } else if (type === 'web') {
       const currentTime = new Date().getTime()
       const date: any = new Date(currentTime + 3600 * 24 * 30 * 12 * 20 * 1000)
       const str = `${key}=${value}; expires=${date.toUTCString()};`
       document.cookie = str
     }
   },
-  get (key: string, type = 'web') {
+  async get (key: string, type = 'web') {
     let value = ''
     if (type === 'wx') {
       try {
@@ -25,7 +40,14 @@ export default {
     } else if (type === 'my') {
       const res = my.getStorageSync({key})
       value = res instanceof Object && res.data ? res.data : ''
-    } else {
+    } else if (type === 'rn') {
+      try {
+        // const AsyncStorage = require('react-native')
+        value = await rnAsyncStorage.getItem(key)
+      } catch (e) {
+        // throw new Error(e)
+      }
+    } else if (type === 'web') {
       if (key) {
         const arr: any = document.cookie.split('; ')
         for (const item of arr) {

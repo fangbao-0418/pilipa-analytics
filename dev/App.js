@@ -1,6 +1,9 @@
 import React from 'react'
 import Pa from '../src'
-const pa = new Pa('abcedfg')
+const pa = new Pa('abcedfg', 'custom ua', {
+  // trigger: true,
+  env: 'dev'
+})
 console.log(pa, 'pa')
 export default class App extends React.Component {
   componentDidMount () {
