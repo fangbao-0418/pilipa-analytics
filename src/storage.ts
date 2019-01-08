@@ -5,7 +5,7 @@ try {
   }
 } catch (e) {
   rnAsyncStorage = {}
-  // console.warn(e)
+  console.error(e)
 }
 export default {
   set (key: string, value: string, type: string = 'web') {

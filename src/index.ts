@@ -2,18 +2,22 @@ import storage from './storage'
 import _ from './utils'
 export interface ConfigProps {
   env?: 'dev' | 'production'
+  /** 是否发送请求 */
   trigger?: boolean
+  /** 采集接口 */
+  url?: string
 }
 const origin: {[type: string]: string} = {
   dev: 'https://x-collector.i-counting.cn',
-  production: 'https://collector.pilipa.cn'
+  production: 'https://collector.i-counting.cn'
 }
 class Pa {
   public appid: string
   public env: 'web' | 'wx' | 'rn' | 'my' = this.getEnv()
   public config = {
-    env: 'production',
-    trigger: true
+    env: 'dev',
+    trigger: true,
+    url: ''
   }
   public origin: string
   public url: string
@@ -36,7 +40,7 @@ class Pa {
       this.ua = this.getUa()
     }
     this.origin = origin[this.config.env]
-    this.url = this.origin + '/log.gif'
+    this.url = this.config.url ? this.config.url : this.origin + '/log.gif'
     this.getUniquedId()
   }
   public async getUniquedId () {
