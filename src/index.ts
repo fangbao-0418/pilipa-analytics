@@ -1,7 +1,7 @@
 import storage from './storage'
 import _ from './utils'
 export interface ConfigProps {
-  env?: 'dev' | 'production'
+  env?: 'development' | 'production'
   /** 是否发送请求 */
   trigger?: boolean
   /** 采集接口 */
@@ -15,7 +15,7 @@ class Pa {
   public appid: string
   public env: 'web' | 'wx' | 'rn' | 'my' = this.getEnv()
   public config = {
-    env: 'dev',
+    env: 'development',
     trigger: true,
     url: ''
   }
@@ -39,8 +39,7 @@ class Pa {
     } else {
       this.ua = this.getUa()
     }
-    this.origin = origin[this.config.env]
-    this.url = this.config.url ? this.config.url : this.origin + '/log.gif'
+    this.setEnv(config.env)
     this.getUniquedId()
   }
   public async getUniquedId () {
@@ -50,6 +49,11 @@ class Pa {
       storage.set('gcookie', this.uniquedId, this.env)
     }
     return this.uniquedId
+  }
+  public setEnv (env: 'development' | 'production') {
+    this.config.env = env
+    this.origin = origin[env]
+    this.url = this.config.url ? this.config.url : this.origin + '/log.gif'
   }
   public getEnv () {
     let env: 'web' | 'wx' | 'my' | 'rn' = 'web'

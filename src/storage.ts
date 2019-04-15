@@ -1,11 +1,16 @@
 let rnAsyncStorage: any = {}
 try {
   if (window && window.navigator && window.navigator.product === 'ReactNative') {
-    rnAsyncStorage = require('react-native').AsyncStorage
+    // const m: any = 'react-native'
+    // rnAsyncStorage = require(m)
+    // console.log(rnAsyncStorage)
+    // rnAsyncStorage = require('react-native').AsyncStorage
   }
 } catch (e) {
   rnAsyncStorage = {}
-  console.error(e)
+  // console.error(e)
+} finally {
+  console.log('')
 }
 export default {
   set (key: string, value: string, type: string = 'web') {

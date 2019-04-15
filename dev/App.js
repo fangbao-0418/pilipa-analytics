@@ -1,6 +1,6 @@
 import React from 'react'
 import Pa from '../src'
-const pa = new Pa('abcedfg', 'custom ua', {
+const pa = new Pa('appdemo', 'custom ua', {
   // trigger: true,
   env: 'dev'
 })
