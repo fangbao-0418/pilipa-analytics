@@ -8,7 +8,7 @@ export interface ConfigProps {
   url?: string
 }
 const origin: {[type: string]: string} = {
-  dev: 'https://x-collector.i-counting.cn',
+  development: 'https://x-collector.i-counting.cn',
   production: 'https://collector.i-counting.cn'
 }
 class Pa {
