@@ -1,10 +1,7 @@
 let rnAsyncStorage: any = {}
 try {
   if (window && window.navigator && window.navigator.product === 'ReactNative') {
-    // const m: any = 'react-native'
-    // rnAsyncStorage = require(m)
-    // console.log(rnAsyncStorage)
-    // rnAsyncStorage = require('react-native').AsyncStorage
+    rnAsyncStorage = require('react-native').AsyncStorage
   }
 } catch (e) {
   rnAsyncStorage = {}

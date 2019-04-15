@@ -1,7 +1,7 @@
 
 # usage
 ```
-yarn add pilipa-analytics --registry https://npmregistry.i-counting.cn/
+yarn add pilipa-analytics-react-native --registry https://npmregistry.i-counting.cn/
 import Pa from 'pilipa-analytics'
 const pa = new Pa('appid', 'userAgent', {
   env: 'production', // development || production
